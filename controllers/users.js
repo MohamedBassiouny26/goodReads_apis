@@ -67,6 +67,11 @@ async function getBooksByStatus(userId, status) {
 }
 async function addBookForUser(req, res) {
     try {
+        const userInfo = (await UserModel.findById(req.params.id));
+        console.log("sent book", req.body.bookId);
+        const checkIfExist = userInfo.library.find(book => book.bookId == req.body.bookId)
+        if (checkIfExist)
+            return editBookStatus(req, res);
         await UserModel.findByIdAndUpdate(req.params.id, { $push: { library: { ...req.body, rating: 0 } } })
         res.json({ status: 200, message: "Book Added Succeffully" });
     } catch (erro) {
